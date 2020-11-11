@@ -10,7 +10,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Noise } from 'noisejs'
 
-import { parabola, map } from '../../utils/math'
+import { parabola, randomColor, map } from '../../utils/math'
 
 import styles from './Cercles.module.css'
 
@@ -44,12 +44,14 @@ const returnPoint = (noiseVal, a, radius) => {
 
 const Cercles = (props) => {
   const {
-    tagName: Tag,
-    className,
-    variant,
-    children,
-    strokeColor,
-    bgColor,
+    tagName: Tag = 'div',
+    className = '',
+    variant = 'default',
+    children = '',
+    strokeColor = 'hotpink',
+    bgColor = 'floralwhite',
+    randomize = 1,
+    frequency = 0.5,
   } = props
 
   const canvasRef = useRef()
@@ -102,12 +104,14 @@ const Cercles = (props) => {
         x: map(-1, 1, 0.0, 0.004, x) * radius * Math.cos(a - time * 0.2),
         y: map(-1, 1, 0.0, 0.004, y) * radius * Math.sin(a - time * 0.2),
       }
-      const noiseVal = noise.perlin3(sample.x, sample.y, time * 0.5)
+      const noiseVal = noise.perlin3(sample.x, sample.y, time * frequency)
       const point = returnPoint(noiseVal, a, radius)
+
       ctx.lineTo(point.x, point.y)
     }
 
-    ctx.strokeStyle = strokeColor
+    ctx.strokeStyle = randomize ? randomColor : strokeColor
+
     ctx.stroke()
   }
 
@@ -190,15 +194,7 @@ Cercles.propTypes = {
   children: PropTypes.node,
   strokeColor: PropTypes.string,
   bgColor: PropTypes.string,
-}
-
-Cercles.defaultProps = {
-  tagName: 'div',
-  className: '',
-  variant: 'default',
-  children: '',
-  strokeColor: 'red',
-  bgColor: 'floralwhite',
+  randomize: PropTypes.bool,
 }
 
 export default Cercles

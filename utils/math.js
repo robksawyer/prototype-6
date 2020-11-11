@@ -22,3 +22,11 @@ export const parabola = (x, k) => {
 export const map = (from1, to1, from2, to2, v) => {
   return from2 + ((v - from1) * (to2 - from2)) / (to1 - from1)
 }
+
+/**
+ * randomColor
+ * @see https://css-tricks.com/snippets/javascript/random-hex-color/
+ */
+export const randomColor = `#${Math.floor(Math.random() * 16777215).toString(
+  16
+)}`
