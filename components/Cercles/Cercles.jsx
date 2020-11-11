@@ -43,7 +43,14 @@ const returnPoint = (noiseVal, a, radius) => {
 // }
 
 const Cercles = (props) => {
-  const { tagName: Tag, className, variant, children } = props
+  const {
+    tagName: Tag,
+    className,
+    variant,
+    children,
+    strokeColor,
+    bgColor,
+  } = props
 
   const canvasRef = useRef()
 
@@ -100,7 +107,7 @@ const Cercles = (props) => {
       ctx.lineTo(point.x, point.y)
     }
 
-    ctx.strokeStyle = '#040404'
+    ctx.strokeStyle = strokeColor
     ctx.stroke()
   }
 
@@ -123,7 +130,7 @@ const Cercles = (props) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       // ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.webkitImageSmoothingEnabled = false // for zoom!
 
-      ctx.fillStyle = 'floralwhite'
+      ctx.fillStyle = bgColor
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       ctx.save()
@@ -181,6 +188,8 @@ Cercles.propTypes = {
   className: PropTypes.string,
   variant: PropTypes.oneOf(['default']),
   children: PropTypes.node,
+  strokeColor: PropTypes.string,
+  bgColor: PropTypes.string,
 }
 
 Cercles.defaultProps = {
@@ -188,6 +197,8 @@ Cercles.defaultProps = {
   className: '',
   variant: 'default',
   children: '',
+  strokeColor: 'red',
+  bgColor: 'floralwhite',
 }
 
 export default Cercles
