@@ -53,11 +53,16 @@ const Cercles = (props) => {
   // Generate some noise
   const noise = useMemo(() => new Noise(Math.random()))
 
-  const origMouse = useMousePosition()
-  const [mouse, setMouse] = useState({
-    x: origMouse.x,
-    y: origMouse.y,
-  })
+  // const origMouse = useMousePosition()
+  // const [mouse, setMouse] = useState({
+  //   x: origMouse.x,
+  //   y: origMouse.y,
+  // })
+
+  let mouse = {
+    x: 0,
+    y: 0,
+  }
 
   useEffect(() => {
     // Set the max radius based on the window
@@ -66,13 +71,23 @@ const Cercles = (props) => {
 
   useEffect(() => {
     const { current: canvas } = canvasRef
-    const { x, y } = origMouse
-    const mouse = {
-      x: (x / canvas.width) * 2 - 1,
-      y: -(y / canvas.height) * 2 + 1,
+    const mouseMove = (e) => {
+      mouse.x = (e.clientX / canvas.width) * 2 - 1
+      mouse.y = -(e.clientY / canvas.height) * 2 + 1
     }
-    setMouse(mouse)
-  }, [origMouse])
+    document.addEventListener('mousemove', mouseMove)
+
+    // const { x, y } = origMouse
+    // const mouse = {
+    //   x: (x / canvas.width) * 2 - 1,
+    //   y: -(y / canvas.height) * 2 + 1,
+    // }
+    // setMouse(mouse)
+
+    return () => {
+      document.removeEventListener('mousemove', mouseMove)
+    }
+  })
 
   // Update the mouse values
   // useEffect(() => {
@@ -97,10 +112,10 @@ const Cercles = (props) => {
 
     // ctx.lineWidth = 3
 
-    const start = {
-      x: radius * Math.cos(0),
-      y: radius * Math.sin(0),
-    }
+    // const start = {
+    //   x: radius * Math.cos(0),
+    //   y: radius * Math.sin(0),
+    // }
     const { x, y } = mouse
     for (let a = 0; a < Math.PI * 2; a += angleStep) {
       const sample = {
