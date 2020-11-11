@@ -61,9 +61,6 @@ const Cercles = (props) => {
 
   // Update the mouse values
   useEffect(() => {
-    // Set the max radius based on the window
-    maxRadius = window.innerWidth * 0.25
-
     const { x, y } = origMouse
     const { current: canvas } = canvasRef
     mouse = {
@@ -80,6 +77,8 @@ const Cercles = (props) => {
    */
   const drawCircle = (ctx, mouse, radius, time, index) => {
     const angleStep = (2 * Math.PI) / 200
+    // Set the max radius based on the window
+    // maxRadius = window.innerWidth * 0.025
 
     ctx.beginPath()
 
