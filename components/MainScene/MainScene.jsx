@@ -40,6 +40,8 @@ import styles from './MainScene.module.css'
 
 import Loader from '../Loader'
 
+import { useAnimationFrameRate } from '../../hooks/useAnimationFrameRate'
+
 // Texture loading examples
 // const envMap = useCubeTexture(
 //   [
