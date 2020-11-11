@@ -22,8 +22,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <HamburgerMenu />
-      <main className={`${styles.main} flex flex-grow flex-col`}>
+      <main
+        className={`${styles.main} flex flex-grow flex-col justify-center items-center`}
+      >
         {/* <MainScene /> */}
+        <p className="absolute font-sans text-6xl">PROTOTYPE 6</p>
         <Cercles />
         {/* <WaveText className="absolute bottom-0 flex items-center justify-center w-screen h-screen pointer-events-none select-none" /> */}
       </main>

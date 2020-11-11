@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react'
 // import Canvas, { useFrame } from 'react-three-fiber'
 import PropTypes from 'prop-types'
 import { Noise } from 'noisejs'
+import { MathUtils } from 'three'
 
 import { parabola, map } from '../../utils/math'
 
@@ -18,7 +19,7 @@ import { useMousePosition } from '../../hooks/useMousePosition'
 
 let maxRadius = Math.PI / 2
 const numCircles = 60
-const margin = 1.025
+const margin = 2.025
 
 /**
  * returnPoint
@@ -53,25 +54,35 @@ const Cercles = (props) => {
   const noise = useMemo(() => new Noise(Math.random()))
 
   const origMouse = useMousePosition()
-  let mouse = useMemo(() => ({
+  const [mouse, setMouse] = useState({
     x: origMouse.x,
     y: origMouse.y,
-  }))
+  })
 
   useEffect(() => {
     // Set the max radius based on the window
-    maxRadius = window.innerWidth * 0.025
+    maxRadius = window.innerWidth * 0.00075
   })
 
-  // Update the mouse values
   useEffect(() => {
-    const { x, y } = origMouse
     const { current: canvas } = canvasRef
-    mouse = {
+    const { x, y } = origMouse
+    const mouse = {
       x: (x / canvas.width) * 2 - 1,
       y: -(y / canvas.height) * 2 + 1,
     }
+    setMouse(mouse)
   }, [origMouse])
+
+  // Update the mouse values
+  // useEffect(() => {
+  //   const { x, y } = origMouse
+  //   const { current: canvas } = canvasRef
+  //   mouse = {
+  //     x: (x / canvas.width) * 2 - 1,
+  //     y: -(y / canvas.height) * 2 + 1,
+  //   }
+  // }, [origMouse])
 
   /**
    * drawCircle
@@ -88,8 +99,8 @@ const Cercles = (props) => {
     //   x: radius * Math.cos(0),
     //   y: radius * Math.sin(0),
     // }
+    const { x, y } = mouse
     for (let a = 0; a < Math.PI * 2; a += angleStep) {
-      const { x, y } = mouse
       const sample = {
         x: map(-1, 1, 0.0, 0.004, x) * radius * Math.cos(a - time * 0.2),
         y: map(-1, 1, 0.0, 0.004, y) * radius * Math.sin(a - time * 0.2),
@@ -104,14 +115,14 @@ const Cercles = (props) => {
   }
 
   useEffect(() => {
+    const { current: canvas } = canvasRef
+    const ctx = canvas.getContext('2d')
+
     /**
      * render
      * @param {*} time
      */
     const render = (time) => {
-      const { current: canvas } = canvasRef
-      const ctx = canvas.getContext('2d')
-
       ctx.fillStyle = '#F4F4F4'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       ctx.save()
@@ -133,6 +144,7 @@ const Cercles = (props) => {
     const loop = (time) => {
       frameId = requestAnimationFrame(loop)
 
+      // slow down time
       time *= 0.001
 
       render(time)
@@ -145,7 +157,7 @@ const Cercles = (props) => {
         cancelAnimationFrame(frameId)
       }
     }
-  }, [])
+  }, [mouse])
 
   return (
     <Tag
