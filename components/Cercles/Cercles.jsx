@@ -95,10 +95,12 @@ const Cercles = (props) => {
 
     ctx.beginPath()
 
-    // const start = {
-    //   x: radius * Math.cos(0),
-    //   y: radius * Math.sin(0),
-    // }
+    // ctx.lineWidth = 3
+
+    const start = {
+      x: radius * Math.cos(0),
+      y: radius * Math.sin(0),
+    }
     const { x, y } = mouse
     for (let a = 0; a < Math.PI * 2; a += angleStep) {
       const sample = {
