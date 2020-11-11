@@ -17,12 +17,8 @@ let frameCount = 0
  * @param {number} increment
  * @param {number} timeMultiplier is multiplied by the frame id
  */
-export const useAnimationFrameRate = (
-  frameRate = 24,
-  increment = 1,
-  timeMultiplier = 0.001
-) => {
-  const [state, setState] = useState({ frame: 0, time: 0, degree: 0 })
+export const useAnimationFrameRate = (frameRate = 24, increment = 1) => {
+  const [state, setState] = useState({ frame: 0, degree: 0 })
 
   // Start the animation
   useEffect(() => {
@@ -32,7 +28,6 @@ export const useAnimationFrameRate = (
         setState((previous) => {
           return {
             frame: frameId,
-            time: frameId * timeMultiplier,
             degree: (previous.degree + increment) % 360,
           }
         })

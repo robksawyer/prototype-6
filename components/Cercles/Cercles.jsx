@@ -16,12 +16,9 @@ import styles from './Cercles.module.css'
 import { useAnimationFrameRate } from '../../hooks/useAnimationFrameRate'
 import { useMousePosition } from '../../hooks/useMousePosition'
 
-// const Scene = () => {
-//   useFrame((state) => {
-//     console.log('state', state)
-//   })
-//   return null
-// }
+let maxRadius = Math.PI / 2
+const numCircles = 60
+const margin = 1.025
 
 /**
  * returnPoint
@@ -40,24 +37,31 @@ const returnPoint = (noiseVal, a, radius) => {
   }
 }
 
+// const Scene = () => {
+//   useFrame((state) => {
+//     console.log('state', state)
+//   })
+//   return null
+// }
+
 const Cercles = (props) => {
   const { tagName: Tag, className, variant, children } = props
 
   const canvasRef = useRef()
 
-  let maxRadius = Math.PI / 2
-  const numCircles = 60
-  const margin = 0.025
-
   // Generate some noise
   const noise = useMemo(() => new Noise(Math.random()))
 
-  const { time } = useAnimationFrameRate(24)
   const origMouse = useMousePosition()
   let mouse = useMemo(() => ({
     x: origMouse.x,
     y: origMouse.y,
   }))
+
+  useEffect(() => {
+    // Set the max radius based on the window
+    maxRadius = window.innerWidth * 0.025
+  })
 
   // Update the mouse values
   useEffect(() => {
@@ -75,10 +79,8 @@ const Cercles = (props) => {
    * @param {*} time
    * @param {*} index
    */
-  const drawCircle = (ctx, mouse, radius, time, index) => {
+  const drawCircle = (ctx, mouse, radius, time) => {
     const angleStep = (2 * Math.PI) / 200
-    // Set the max radius based on the window
-    // maxRadius = window.innerWidth * 0.025
 
     ctx.beginPath()
 
@@ -86,16 +88,14 @@ const Cercles = (props) => {
     //   x: radius * Math.cos(0),
     //   y: radius * Math.sin(0),
     // }
-    const { x, y } = mouse
     for (let a = 0; a < Math.PI * 2; a += angleStep) {
+      const { x, y } = mouse
       const sample = {
         x: map(-1, 1, 0.0, 0.004, x) * radius * Math.cos(a - time * 0.2),
         y: map(-1, 1, 0.0, 0.004, y) * radius * Math.sin(a - time * 0.2),
       }
       const noiseVal = noise.perlin3(sample.x, sample.y, time * 0.5)
-
-      const point = returnPoint(noiseVal, a, radius, time, index)
-
+      const point = returnPoint(noiseVal, a, radius)
       ctx.lineTo(point.x, point.y)
     }
 
@@ -104,6 +104,10 @@ const Cercles = (props) => {
   }
 
   useEffect(() => {
+    /**
+     * render
+     * @param {*} time
+     */
     const render = (time) => {
       const { current: canvas } = canvasRef
       const ctx = canvas.getContext('2d')
@@ -122,9 +126,26 @@ const Cercles = (props) => {
       ctx.restore()
     }
 
-    // Start the render loop
-    render(time)
-  }, [mouse])
+    /**
+     * loop
+     * @param {number} time
+     */
+    const loop = (time) => {
+      frameId = requestAnimationFrame(loop)
+
+      time *= 0.001
+
+      render(time)
+    }
+
+    let frameId = loop()
+
+    return () => {
+      if (frameId) {
+        cancelAnimationFrame(frameId)
+      }
+    }
+  }, [])
 
   return (
     <Tag
