@@ -3,23 +3,20 @@
  *
  * @see https://codepen.io/im_paul_hi/pen/rNaBJZL?editors=1010
  * @see https://www.npmjs.com/package/noisejs
+ * @see https://stackoverflow.com/questions/19142993/how-draw-in-high-resolution-to-canvas-on-chrome-and-why-if-devicepixelratio high resolution drawing in canvas
  */
 import React, { useEffect, useRef, useState, useMemo } from 'react'
 // import Canvas, { useFrame } from 'react-three-fiber'
 import PropTypes from 'prop-types'
 import { Noise } from 'noisejs'
-import { MathUtils } from 'three'
 
 import { parabola, map } from '../../utils/math'
 
 import styles from './Cercles.module.css'
 
-import { useAnimationFrameRate } from '../../hooks/useAnimationFrameRate'
-import { useMousePosition } from '../../hooks/useMousePosition'
-
 let maxRadius = Math.PI / 2
+let margin = 4.025
 const numCircles = 60
-const margin = 2.025
 
 /**
  * returnPoint
@@ -53,12 +50,6 @@ const Cercles = (props) => {
   // Generate some noise
   const noise = useMemo(() => new Noise(Math.random()))
 
-  // const origMouse = useMousePosition()
-  // const [mouse, setMouse] = useState({
-  //   x: origMouse.x,
-  //   y: origMouse.y,
-  // })
-
   let mouse = {
     x: 0,
     y: 0,
@@ -66,7 +57,8 @@ const Cercles = (props) => {
 
   useEffect(() => {
     // Set the max radius based on the window
-    maxRadius = window.innerWidth * 0.00075
+    maxRadius = window.innerWidth * 0.00075 * devicePixelRatio
+    margin = margin * devicePixelRatio
   })
 
   useEffect(() => {
@@ -77,45 +69,26 @@ const Cercles = (props) => {
     }
     document.addEventListener('mousemove', mouseMove)
 
-    // const { x, y } = origMouse
-    // const mouse = {
-    //   x: (x / canvas.width) * 2 - 1,
-    //   y: -(y / canvas.height) * 2 + 1,
-    // }
-    // setMouse(mouse)
-
     return () => {
       document.removeEventListener('mousemove', mouseMove)
     }
   })
 
-  // Update the mouse values
-  // useEffect(() => {
-  //   const { x, y } = origMouse
-  //   const { current: canvas } = canvasRef
-  //   mouse = {
-  //     x: (x / canvas.width) * 2 - 1,
-  //     y: -(y / canvas.height) * 2 + 1,
-  //   }
-  // }, [origMouse])
-
   /**
    * drawCircle
-   * @param {*} radius
-   * @param {*} time
-   * @param {*} index
+   * @param {*} ctx
+   * @param {object} mouse mouse position
+   * @param {number} radius circle radius
+   * @param {number} time adjusted time from requestAnimationFrame
+   * @param {number} index circle index
    */
-  const drawCircle = (ctx, mouse, radius, time) => {
+  const drawCircle = (ctx, mouse, radius, time, index) => {
     const angleStep = (2 * Math.PI) / 200
 
     ctx.beginPath()
 
     // ctx.lineWidth = 3
 
-    // const start = {
-    //   x: radius * Math.cos(0),
-    //   y: radius * Math.sin(0),
-    // }
     const { x, y } = mouse
     for (let a = 0; a < Math.PI * 2; a += angleStep) {
       const sample = {
@@ -134,18 +107,31 @@ const Cercles = (props) => {
   useEffect(() => {
     const { current: canvas } = canvasRef
     const ctx = canvas.getContext('2d')
+    var rect = canvas.getBoundingClientRect()
+    canvas.width =
+      Math.round(devicePixelRatio * rect.right) -
+      Math.round(devicePixelRatio * rect.left)
+    canvas.height =
+      Math.round(devicePixelRatio * rect.bottom) -
+      Math.round(devicePixelRatio * rect.top)
 
     /**
      * render
      * @param {*} time
      */
     const render = (time) => {
-      ctx.fillStyle = '#F4F4F4'
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      // ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.webkitImageSmoothingEnabled = false // for zoom!
+
+      ctx.fillStyle = 'floralwhite'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
+
       ctx.save()
 
+      // Handles centering the circles into the middle of the canvas
       ctx.translate(canvas.width * 0.5, canvas.height * 0.5)
 
+      // Generates the circles
       for (let i = 0; i < numCircles; i++) {
         const radius = i * margin * maxRadius
         drawCircle(ctx, mouse, radius, time, i)
