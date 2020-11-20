@@ -33,9 +33,10 @@ export default function Home() {
 
       TweenMax.staggerFrom(
         char,
-        2,
+        1,
         {
           y: -rVal * Math.random(),
+          rotation: rVal * Math.random(),
           ease: easeCubicInOut,
           yoyo: true,
           repeat: -1,
@@ -49,9 +50,10 @@ export default function Home() {
 
       TweenMax.staggerFrom(
         char,
-        2,
+        5,
         {
           y: rVal * Math.random(),
+          rotation: -rVal * Math.random(),
           ease: easeCubicInOut,
           yoyo: true,
           repeat: -1,
@@ -65,9 +67,10 @@ export default function Home() {
 
       TweenMax.staggerFrom(
         char,
-        2,
+        1.6,
         {
           y: -rVal * Math.random(),
+          rotation: -rVal * Math.random(),
           ease: easeCubicInOut,
           yoyo: true,
           repeat: -1,
@@ -93,7 +96,7 @@ export default function Home() {
         <div className="absolute flex flex-col text-white">
           <p
             id="b0"
-            className="text-6xl tracking-wider uppercase bold -mt-50 font-caslon"
+            className="text-6xl tracking-wider text-black uppercase bold -mt-50 font-caslon"
           >
             Beetlejuice
           </p>
@@ -105,7 +108,7 @@ export default function Home() {
           </p>
           <p
             id="b2"
-            className="text-6xl tracking-wider uppercase bold font-caslon"
+            className="text-6xl tracking-wider text-black uppercase bold font-caslon"
           >
             Beetlejuice
           </p>

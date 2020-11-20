@@ -11,7 +11,7 @@ const HamburgerMenu = (props) => {
 
   const [active, setActive] = useState(false)
 
-  let color = 'rgb(32, 32, 32)'
+  let color = 'rgb(255, 255, 255)'
 
   return (
     <Tag
