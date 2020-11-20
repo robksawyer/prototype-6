@@ -48,9 +48,9 @@ const Cercles = (props) => {
     className = '',
     variant = 'default',
     children = '',
-    strokeColor = 'hotpink',
-    bgColor = 'floralwhite',
-    randomize = 1,
+    strokeColor = 'black',
+    bgColor = 'white',
+    randomize = 0,
     frequency = 0.5,
   } = props
 
@@ -111,7 +111,7 @@ const Cercles = (props) => {
     }
 
     ctx.strokeStyle = randomize ? randomColor : strokeColor
-
+    ctx.lineWidth = 50
     ctx.stroke()
   }
 
@@ -140,11 +140,11 @@ const Cercles = (props) => {
       ctx.save()
 
       // Handles centering the circles into the middle of the canvas
-      ctx.translate(canvas.width * 0.5, canvas.height * 0.5)
+      ctx.translate(canvas.width / 5, canvas.height / 5)
 
       // Generates the circles
       for (let i = 0; i < numCircles; i++) {
-        const radius = i * margin * maxRadius
+        const radius = i * margin * maxRadius * 2
         drawCircle(ctx, mouse, radius, time, i)
       }
 
@@ -159,7 +159,7 @@ const Cercles = (props) => {
       frameId = requestAnimationFrame(loop)
 
       // slow down time
-      time *= 0.001
+      time *= 0.0005
 
       render(time)
     }
