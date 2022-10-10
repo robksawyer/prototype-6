@@ -42,18 +42,15 @@ const returnPoint = (noiseVal, a, radius) => {
 //   return null
 // }
 
-const Cercles = (props) => {
-  const {
-    tagName: Tag = 'div',
-    className = '',
-    variant = 'default',
-    children = '',
-    strokeColor = 'hotpink',
-    bgColor = 'floralwhite',
-    randomize = 1,
-    frequency = 0.5,
-  } = props
-
+const Cercles = ({
+  tagName: Tag = 'div',
+  className = '',
+  variant = 'default',
+  strokeColor = 'hotpink',
+  bgColor = 'floralwhite',
+  randomize = true,
+  frequency = 0.5,
+}) => {
   const canvasRef = useRef()
 
   // Generate some noise
@@ -111,7 +108,6 @@ const Cercles = (props) => {
     }
 
     ctx.strokeStyle = randomize ? randomColor : strokeColor
-
     ctx.stroke()
   }
 
